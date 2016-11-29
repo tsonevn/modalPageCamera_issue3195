@@ -2,10 +2,11 @@ import {ObservableArray} from "data/observable-array";
 import {Page, ShownModallyData} from 'ui/page';
 import {Observable, EventData} from "data/observable";
 import frame = require("ui/frame");
-import * as camera from "nativescript-camera";
+import {Image} from "ui/image"
 
 var closeCallback: Function;
 var array;
+var asset;
 export function onPageLoaded(args) {
   var page:Page = <Page>args.object;  
 }
@@ -19,11 +20,7 @@ export function onShowingModally(args: EventData) {
 export function onShownModally(args: ShownModallyData) {
     console.log(">>> login-page.onShownModally, context: " + args.context);
     
-    var selected = <number>args.context;
-    // console.log(selected);
-    
-    
-    
+     asset = args.context
     closeCallback = args.closeCallback;
     
     var modalPage = <Page>args.object;
@@ -34,17 +31,16 @@ export function onShownModally(args: ShownModallyData) {
     
 }
 export function openCamera(){
-var options = { width: 300, height: 300, keepAspectRatio: true,  saveToGallery: true };
-        camera.takePicture(options)
-            .then(imageAsset => {
-                // this.imageTaken = imageAsset;
-                console.log("Size: " + imageAsset.options.width + "x" + imageAsset.options.height);
-            }).catch(err => {
-                console.log(err.message);
-            })
-    
+    closeCallback("open_camera")
 }
 
 export function close(){
-    closeCallback(0);
+    closeCallback("close_modal");
+}
+
+export function imageLoaded(args){
+var img = <Image> args.object;
+if(asset != null){
+    img.src = asset;
+}
 }

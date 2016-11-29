@@ -1,5 +1,7 @@
 <Page xmlns="http://www.nativescript.org/tns.xsd" loaded="onPageLoaded" showingModally="onShowingModally" shownModally="onShownModally" style="height:300px; margin:30px;">
     <StackLayout>
+    <Image src="" stretch ="none" loaded="imageLoaded"/>
+    
     <Button text="Close" tap="close" />
     
       <Button text="open camera" tap="openCamera" />

@@ -7,7 +7,10 @@ logic, and to set up your page’s data binding.
 import { EventData } from 'data/observable';
 import { Page } from 'ui/page';
 import { HelloWorldModel } from './main-view-model';
-
+import * as camera from "nativescript-camera";
+import { ImageAsset } from "image-asset";
+import {Image} from "ui/image"
+let page
 // Event handler for Page "navigatingTo" event attached in main-page.xml
 export function navigatingTo(args: EventData) {
     /*
@@ -15,7 +18,7 @@ export function navigatingTo(args: EventData) {
     view the API reference of the Page to see what’s available at
     https://docs.nativescript.org/api-reference/classes/_ui_page_.page.html
     */
-    let page = <Page>args.object;
+    page = <Page>args.object;
     
     /*
     A page’s bindingContext is an object that should be used to perform
@@ -30,15 +33,25 @@ export function navigatingTo(args: EventData) {
     page.bindingContext = new HelloWorldModel();
 }
 export function onTap(args: EventData) {
-    let page = (<any>args.object).page;
-
-        showModal(page, 0, false);
+    showModal(page,null, false);
     
 }
 
 
-function showModal(page: Page, _selected: number, fullscreen?: boolean) {
-    page.showModal("./modalView", _selected, function (selectedItem:number) {
-        
+function showModal(page: Page, _selected: ImageAsset, fullscreen?: boolean) {
+    page.showModal("./modalView", _selected, function (args:string) {
+        if(args == "open_camera"){
+            var options = { width: 300, height: 300, keepAspectRatio: true,  saveToGallery: true };
+            camera.takePicture(options)
+            .then(imageAsset => {
+                console.log("Size: " + imageAsset.options.width + "x" + imageAsset.options.height);
+                setTimeout(function(){
+                    showModal(page,imageAsset, false);
+                },100)
+                
+            }).catch(err => {
+                console.log(err.message);
+            })
+        }
     }, fullscreen);
 }
